@@ -1,14 +1,9 @@
-import 'dart:developer';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:weather_app/models/weather_model.dart';
-import 'package:weather_app/services/weather_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubits/get_info_cubit/get_info_cubit.dart';
 
-WeatherModel weatherModel;
-
-class Search extends StatelessWidget {
-  const Search({super.key});
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,26 +12,16 @@ class Search extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 44, 110, 224),
           title: const Text('Search a city'),
-          // leading: IconButton(
-          //   icon: const Icon(
-          //     Icons.arrow_back_ios_new,
-          //   ),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
         ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextFormField(
               onFieldSubmitted: (value) async {
-                //  value = value[0].toUpperCase +value.substring(1).toLowerCase;
-
-                weatherModel =
-                    await WeatherService(Dio()).getWeatherInfo(cityName: value);
-                Navigator.of(context).pop;
-                log(weatherModel.cityName);
+                // to trigger cubit 🫵🏻🫵🏻🫵🏻
+                var getInfoCubit = BlocProvider.of<GetInfoCubit>(context);
+                getInfoCubit.getWeather(cityName: value);
+                Navigator.pop(context);
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(

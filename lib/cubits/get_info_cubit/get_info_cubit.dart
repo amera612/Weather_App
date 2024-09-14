@@ -5,10 +5,15 @@ import 'package:weather_app/models/weather_model.dart';
 import 'package:weather_app/services/weather_service.dart';
 
 class GetInfoCubit extends Cubit<WeatherState> {
-  GetInfoCubit(super.initialState);
-
+  GetInfoCubit() : super(NoWeatherState());
+  late final WeatherModel weatherModel;
   getWeather({required String cityName}) async {
-    WeatherModel weatherModel =
-        await WeatherService(Dio()).getWeatherInfo(cityName: cityName);
+    try {
+      weatherModel =
+          await WeatherService(Dio()).getWeatherInfo(cityName: cityName);
+      emit(LoadedWeatherState(weatherModel));
+    } catch (e) {
+      emit(MissingWeatherState(e.toString()));
+    }
   }
 }

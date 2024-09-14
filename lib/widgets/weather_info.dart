@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubits/get_info_cubit/get_info_cubit.dart';
 
 class WeatherInfo extends StatelessWidget {
   const WeatherInfo({super.key});
+//🫵🏻🚗 to pass data from cubit by state🚗🫵🏻
+  //final WeatherModel weatherModel;
 
   @override
   Widget build(BuildContext context) {
+    var weatherModel = BlocProvider.of<GetInfoCubit>(context).weatherModel;
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -19,16 +24,16 @@ class WeatherInfo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'Alexandria',
-            style: TextStyle(
+          Text(
+            weatherModel.cityName,
+            style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Text(
-            'updated at 2:55',
-            style: TextStyle(
+          Text(
+            'updated at ${weatherModel.date.hour}: ${weatherModel.date.minute}',
+            style: const TextStyle(
               fontSize: 20,
             ),
           ),
@@ -37,25 +42,32 @@ class WeatherInfo extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset('assets/images/rainy.png'),
-                const Text(
-                  '17',
-                  style: TextStyle(
+                //Image.asset('assets/images/rainy.png'),
+                if (weatherModel.image.contains('https:'))
+                  Image.network(weatherModel.image)
+                else
+                  Image.network('https:${weatherModel.image}'),
+
+                Text(
+                  weatherModel.temp.toString(),
+                  style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Column(
+                Column(
                   children: [
                     Text(
-                      'Maxtemp: 24',
-                      style: TextStyle(
+                      'maxTemp: ${weatherModel.maxTemp.round()}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Mintemp: 16',
-                      style: TextStyle(
+                      'minTemp: ${weatherModel.minTemp.round()}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
@@ -64,9 +76,9 @@ class WeatherInfo extends StatelessWidget {
               ],
             ),
           ),
-          const Text(
-            'light Rain',
-            style: TextStyle(
+          Text(
+            weatherModel.weatherCondition,
+            style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
@@ -76,3 +88,6 @@ class WeatherInfo extends StatelessWidget {
     );
   }
 }
+
+// DateTime stringToDateTime(String value) {
+//   return DateTime.parse(value);}
